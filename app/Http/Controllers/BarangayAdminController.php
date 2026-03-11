@@ -125,7 +125,7 @@ class BarangayAdminController extends Controller
     public function createAccessCode(Request $request)
     {
         $validated = $request->validate([
-            'role' => 'required|in:nurse,doctor,barangay_admin',
+            'role' => 'required|in:nurse,doctor',
             'usage_limit' => 'nullable|integer|min:1|max:100',
             'expires_days' => 'nullable|integer|min:1|max:365',
         ]);
