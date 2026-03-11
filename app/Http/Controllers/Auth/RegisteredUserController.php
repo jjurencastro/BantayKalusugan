@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Patient;
 use App\Models\Nurse;
 use App\Models\Doctor;
-use App\Models\BarangayAdmin;
 use App\Models\AdminAccessCode;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -41,7 +40,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:500'],
-            'role' => ['required', 'in:patient,nurse,doctor,barangay_admin'],
+            'role' => ['required', 'in:patient,nurse,doctor'],
         ];
 
         // Require access code for non-patient roles
@@ -74,7 +73,6 @@ class RegisteredUserController extends Controller
             'patient' => Patient::create(['user_id' => $user->id]),
             'nurse' => Nurse::create(['user_id' => $user->id, 'specialization' => 'General', 'license_number' => 'LN' . $user->id . date('YmdHis')]),
             'doctor' => Doctor::create(['user_id' => $user->id, 'specialization' => 'General', 'license_number' => 'MD' . $user->id . date('YmdHis')]),
-            'barangay_admin' => BarangayAdmin::create(['user_id' => $user->id, 'barangay_name' => '']),
         };
 
         // Record access code usage for non-patient roles

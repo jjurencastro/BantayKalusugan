@@ -36,7 +36,6 @@
                 <option value="patient" @selected(old('role') === 'patient')>{{ __('Patient') }}</option>
                 <option value="nurse" @selected(old('role') === 'nurse')>{{ __('Nurse') }}</option>
                 <option value="doctor" @selected(old('role') === 'doctor')>{{ __('Doctor') }}</option>
-                <option value="barangay_admin" @selected(old('role') === 'barangay_admin')>{{ __('Barangay Admin') }}</option>
             </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
@@ -46,7 +45,7 @@
             <x-input-label for="access_code" :value="__('Administrator Access Code')" />
             <x-text-input id="access_code" class="block mt-1 w-full" type="text" name="access_code" :value="old('access_code')" placeholder="Enter the access code provided by administrator" autocomplete="off" />
             <x-input-error :messages="$errors->get('access_code')" class="mt-2" />
-            <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Required for Nurse, Doctor, or Admin registration</p>
+            <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">Required for Nurse or Doctor registration</p>
         </div>
 
         <!-- Password -->
