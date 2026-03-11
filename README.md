@@ -32,9 +32,9 @@ BantayKalusugan enables patients to report health concerns, allows nurses and do
 ## Tech Stack
 
 - **Backend**: Laravel 12.x
-- **Frontend**: Vue.js with Tailwind CSS
+- **Frontend**: Blade templates with Alpine.js
 - **Build Tool**: Vite
-- **Database**: PostgreSQL
+- **Database**: MySQL (default in `.env.example`; PostgreSQL supported)
 - **Styling**: Tailwind CSS
 - **Testing**: PHPUnit
 
