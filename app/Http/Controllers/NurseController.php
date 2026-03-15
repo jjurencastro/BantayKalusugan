@@ -42,11 +42,15 @@ class NurseController extends Controller
 
     public function viewPatientDetail(Patient $patient)
     {
-        $healthUpdates = PatientHealthUpdate::where('patient_id', $patient->id)
+        $healthHistory = PatientHealthUpdate::where('patient_id', $patient->id)
             ->orderBy('recorded_at', 'desc')
             ->paginate(10);
 
-        return view('nurse.patient-detail', compact('patient', 'healthUpdates'));
+        $latestHealthUpdate = PatientHealthUpdate::where('patient_id', $patient->id)
+            ->orderBy('recorded_at', 'desc')
+            ->first();
+
+        return view('nurse.patient-detail', compact('patient', 'healthHistory', 'latestHealthUpdate'));
     }
 
     public function updatePatientHealth(Request $request, Patient $patient)
