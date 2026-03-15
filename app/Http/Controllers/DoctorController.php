@@ -12,16 +12,28 @@ class DoctorController extends Controller
 {
     public function dashboard()
     {
-        $pendingReports = MedicalReport::where('status', 'pending')
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
-        $approvedReports = MedicalReport::where('status', 'approved')
-            ->orderBy('approved_at', 'desc')
+        $doctor = auth()->user()->doctor;
+
+        $recentRequests = HealthIncident::with('patient.user')
+            ->whereIn('status', ['reported', 'under_review'])
+            ->orderBy('reported_at', 'desc')
             ->limit(10)
             ->get();
 
-        return view('doctor.dashboard', compact('pendingReports', 'approvedReports'));
+        $pendingRequests = HealthIncident::whereIn('status', ['reported', 'under_review'])->count();
+        $reportsForApproval = MedicalReport::where('status', 'pending')->count();
+        $advicesGiven = MedicalAdvice::where('doctor_id', $doctor->id)->count();
+        $patientsConsulted = MedicalAdvice::where('doctor_id', $doctor->id)
+            ->distinct('patient_id')
+            ->count('patient_id');
+
+        return view('doctor.dashboard', compact(
+            'recentRequests',
+            'pendingRequests',
+            'reportsForApproval',
+            'advicesGiven',
+            'patientsConsulted'
+        ));
     }
 
     public function provideMedicalAdvice(Patient $patient)

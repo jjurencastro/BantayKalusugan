@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\HealthAlert;
+use App\Models\HealthIncident;
 use App\Models\PatientHealthUpdate;
 use Illuminate\Http\Request;
 
@@ -11,9 +13,23 @@ class NurseController extends Controller
     public function dashboard()
     {
         $patients = Patient::with('user')->paginate(15);
-        $totalPatients = Patient::count();
+        $patientCount = Patient::count();
+        $pendingReports = HealthIncident::whereIn('status', ['reported', 'under_review'])->count();
+        $criticalAlerts = HealthAlert::where('severity', 'critical')->count();
 
-        return view('nurse.dashboard', compact('patients', 'totalPatients'));
+        $nurseId = auth()->user()->nurse?->id;
+        $completedUpdates = PatientHealthUpdate::when(
+            $nurseId,
+            fn ($query) => $query->where('nurse_id', $nurseId)
+        )->count();
+
+        return view('nurse.dashboard', compact(
+            'patients',
+            'patientCount',
+            'pendingReports',
+            'criticalAlerts',
+            'completedUpdates'
+        ));
     }
 
     public function viewPatients()
