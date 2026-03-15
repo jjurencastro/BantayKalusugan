@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MedicalAdvice extends Model
 {
+    protected $table = 'medical_advices';
+
     protected $fillable = [
         'patient_id',
         'doctor_id',
