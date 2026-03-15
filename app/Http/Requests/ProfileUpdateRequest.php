@@ -25,6 +25,8 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'blood_type' => ['nullable', 'string', 'max:10'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
         ];
     }
 }

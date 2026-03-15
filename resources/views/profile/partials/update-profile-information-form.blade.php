@@ -47,6 +47,30 @@
             @endif
         </div>
 
+        @if ($user->role === 'patient' && $user->patient)
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <x-input-label for="blood_type" :value="__('Blood Type (Optional)')" />
+                    <select id="blood_type" name="blood_type" class="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="">{{ __('Select blood type...') }}</option>
+                        @foreach (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $bloodType)
+                            <option value="{{ $bloodType }}" @selected(old('blood_type', $user->patient->blood_type) === $bloodType)>{{ $bloodType }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error class="mt-2" :messages="$errors->get('blood_type')" />
+                </div>
+
+                <div>
+                    <x-input-label for="date_of_birth" :value="__('Date of Birth (Optional)')" />
+                    <x-text-input id="date_of_birth" name="date_of_birth" type="date" class="mt-1 block w-full" :value="old('date_of_birth', optional($user->patient->date_of_birth)->format('Y-m-d'))" max="{{ now()->subDay()->format('Y-m-d') }}" />
+                    <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
+                    <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">
+                        {{ __('Current age:') }} {{ $user->patient->age ?? __('N/A') }}
+                    </p>
+                </div>
+            </div>
+        @endif
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

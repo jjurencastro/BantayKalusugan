@@ -23,7 +23,7 @@
 
         <!-- Phone Number -->
         <div class="mt-4">
-            <x-input-label for="phone" :value="__('Phone Number')" />
+            <x-input-label for="phone" :value="__('Phone Number (Optional)')" />
             <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')" autocomplete="tel" />
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
         </div>
@@ -38,6 +38,28 @@
                 <option value="doctor" @selected(old('role') === 'doctor')>{{ __('Doctor') }}</option>
             </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
+
+        <div class="mt-4" id="patient-fields" style="display: none;">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <x-input-label for="blood_type" :value="__('Blood Type (Optional)')" />
+                    <select id="blood_type" name="blood_type" class="block mt-1 w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <option value="">{{ __('Select blood type...') }}</option>
+                        @foreach (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] as $bloodType)
+                            <option value="{{ $bloodType }}" @selected(old('blood_type') === $bloodType)>{{ $bloodType }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('blood_type')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="date_of_birth" :value="__('Date of Birth (Optional)')" />
+                    <x-text-input id="date_of_birth" class="block mt-1 w-full" type="date" name="date_of_birth" :value="old('date_of_birth')" max="{{ now()->subDay()->format('Y-m-d') }}" />
+                    <x-input-error :messages="$errors->get('date_of_birth')" class="mt-2" />
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">{{ __('Age is calculated automatically from date of birth.') }}</p>
+                </div>
+            </div>
         </div>
 
         <!-- Access Code (for non-patient roles) -->
@@ -86,12 +108,12 @@
     </form>
 
     <script>
-        // Show/hide access code field based on role selection
-        document.getElementById('role').addEventListener('change', function() {
+        function updateRegistrationFields(roleValue) {
             const accessCodeField = document.getElementById('access-code-field');
             const accessCodeInput = document.getElementById('access_code');
-            
-            if (this.value && this.value !== 'patient') {
+            const patientFields = document.getElementById('patient-fields');
+
+            if (roleValue && roleValue !== 'patient') {
                 accessCodeField.style.display = 'block';
                 accessCodeInput.required = true;
             } else {
@@ -99,18 +121,19 @@
                 accessCodeInput.required = false;
                 accessCodeInput.value = ''; // Clear the field
             }
+
+            patientFields.style.display = roleValue === 'patient' ? 'block' : 'none';
+        }
+
+        // Show/hide conditional fields based on role selection
+        document.getElementById('role').addEventListener('change', function() {
+            updateRegistrationFields(this.value);
         });
 
         // Check on page load in case form was resubmitted with errors
         document.addEventListener('DOMContentLoaded', function() {
             const role = document.getElementById('role').value;
-            const accessCodeField = document.getElementById('access-code-field');
-            const accessCodeInput = document.getElementById('access_code');
-            
-            if (role && role !== 'patient') {
-                accessCodeField.style.display = 'block';
-                accessCodeInput.required = true;
-            }
+            updateRegistrationFields(role);
         });
     </script>
 </x-guest-layout>

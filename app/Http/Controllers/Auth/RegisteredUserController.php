@@ -41,6 +41,8 @@ class RegisteredUserController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string', 'max:500'],
             'role' => ['required', 'in:patient,nurse,doctor'],
+            'blood_type' => ['nullable', 'string', 'max:10'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
         ];
 
         // Require access code for non-patient roles
@@ -70,7 +72,11 @@ class RegisteredUserController extends Controller
 
         // Create role-specific record
         match($request->role) {
-            'patient' => Patient::create(['user_id' => $user->id]),
+            'patient' => Patient::create([
+                'user_id' => $user->id,
+                'blood_type' => $validated['blood_type'] ?? null,
+                'date_of_birth' => $validated['date_of_birth'] ?? null,
+            ]),
             'nurse' => Nurse::create(['user_id' => $user->id, 'specialization' => 'General', 'license_number' => 'LN' . $user->id . date('YmdHis')]),
             'doctor' => Doctor::create(['user_id' => $user->id, 'specialization' => 'General', 'license_number' => 'MD' . $user->id . date('YmdHis')]),
         };

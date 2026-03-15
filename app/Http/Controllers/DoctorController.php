@@ -49,15 +49,23 @@ class DoctorController extends Controller
     public function storeMedicalAdvice(Request $request, Patient $patient)
     {
         $validated = $request->validate([
-            'advice' => 'required|string',
+            'diagnosis' => 'required|string',
+            'treatment_plan' => 'required|string',
+            'recommendations' => 'nullable|string',
             'medication' => 'nullable|string',
             'follow_up_date' => 'nullable|date|after:today',
         ]);
 
+        $advice = "Diagnosis: {$validated['diagnosis']}\n\nTreatment Plan: {$validated['treatment_plan']}";
+
+        if (!empty($validated['recommendations'])) {
+            $advice .= "\n\nRecommendations: {$validated['recommendations']}";
+        }
+
         MedicalAdvice::create([
             'patient_id' => $patient->id,
             'doctor_id' => auth()->user()->doctor->id,
-            'advice' => $validated['advice'],
+            'advice' => $advice,
             'medication' => $validated['medication'] ?? null,
             'follow_up_date' => $validated['follow_up_date'] ?? null,
         ]);

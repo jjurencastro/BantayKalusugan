@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Patient extends Model
 {
@@ -17,6 +18,19 @@ class Patient extends Model
         'emergency_contact_phone',
         'date_of_birth',
     ];
+
+    protected $casts = [
+        'date_of_birth' => 'date',
+    ];
+
+    public function getAgeAttribute(): ?int
+    {
+        if (!$this->date_of_birth instanceof Carbon) {
+            return null;
+        }
+
+        return $this->date_of_birth->age;
+    }
 
     public function user(): BelongsTo
     {
