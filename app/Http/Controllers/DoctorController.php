@@ -38,7 +38,12 @@ class DoctorController extends Controller
 
     public function provideMedicalAdvice(Patient $patient)
     {
-        return view('doctor.provide-advice', compact('patient'));
+        $recentIncidents = HealthIncident::where('patient_id', $patient->id)
+            ->orderBy('reported_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('doctor.provide-advice', compact('patient', 'recentIncidents'));
     }
 
     public function storeMedicalAdvice(Request $request, Patient $patient)
