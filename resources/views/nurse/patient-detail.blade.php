@@ -148,6 +148,58 @@
                 </div>
             </div>
 
+            <!-- Send Health Alert -->
+            <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-red-100 dark:border-slate-700">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('Send Health Alert') }}</h3>
+
+                    <form action="{{ route('nurse.store-health-alert', $patient) }}" method="POST" class="space-y-4">
+                        @csrf
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="alert_type" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">{{ __('Alert Type') }}</label>
+                                <select id="alert_type" name="alert_type" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    <option value="high_bp">{{ __('High Blood Pressure') }}</option>
+                                    <option value="fever">{{ __('Fever') }}</option>
+                                    <option value="unusual_symptoms">{{ __('Unusual Symptoms') }}</option>
+                                    <option value="medication_reminder">{{ __('Medication Reminder') }}</option>
+                                    <option value="follow_up">{{ __('Follow-up Required') }}</option>
+                                    <option value="emergency">{{ __('Emergency') }}</option>
+                                    <option value="other">{{ __('Other') }}</option>
+                                </select>
+                                @error('alert_type')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                            </div>
+
+                            <div>
+                                <label for="severity" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">{{ __('Severity') }}</label>
+                                <select id="severity" name="severity" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    <option value="low">{{ __('Low') }}</option>
+                                    <option value="medium" selected>{{ __('Medium') }}</option>
+                                    <option value="high">{{ __('High') }}</option>
+                                    <option value="critical">{{ __('Critical') }}</option>
+                                </select>
+                                @error('severity')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="alert_message" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">{{ __('Message') }}</label>
+                            <textarea id="alert_message" name="message" rows="3"
+                                placeholder="{{ __('Describe the health concern or alert details...') }}"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500">{{ old('message') }}</textarea>
+                            @error('message')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div class="flex justify-end pt-2">
+                            <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                                {{ __('Send Alert') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Health History -->
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-blue-100 dark:border-slate-700">
                 <div class="p-6">

@@ -75,6 +75,26 @@ class NurseController extends Controller
         return redirect()->route('nurse.patient-detail', $patient)->with('success', 'Patient health data updated successfully');
     }
 
+    public function storeHealthAlert(Request $request, Patient $patient)
+    {
+        $validated = $request->validate([
+            'alert_type' => 'required|string',
+            'message' => 'required|string|max:1000',
+            'severity' => 'required|in:low,medium,high,critical',
+        ]);
+
+        HealthAlert::create([
+            'patient_id' => $patient->id,
+            'alert_type' => $validated['alert_type'],
+            'message' => $validated['message'],
+            'severity' => $validated['severity'],
+            'is_read' => false,
+        ]);
+
+        return redirect()->route('nurse.patient-detail', $patient)
+            ->with('success', 'Health alert sent to patient successfully.');
+    }
+
     public function communityHealthStatus()
     {
         $totalPatients = Patient::count();

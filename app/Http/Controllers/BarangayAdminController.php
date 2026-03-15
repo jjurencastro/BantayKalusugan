@@ -14,19 +14,41 @@ class BarangayAdminController extends Controller
     public function dashboard()
     {
         $totalUsers = User::count();
-        $totalPatients = User::where('role', 'patient')->count();
-        $totalNurses = User::where('role', 'nurse')->count();
-        $totalDoctors = User::where('role', 'doctor')->count();
-        $totalIncidents = HealthIncident::count();
+
+        $roleDistribution = User::selectRaw('role, COUNT(*) as total')
+            ->groupBy('role')
+            ->pluck('total', 'role')
+            ->toArray();
+
+        $roleDistribution = array_merge([
+            'patient' => 0,
+            'nurse' => 0,
+            'doctor' => 0,
+            'barangay_admin' => 0,
+        ], $roleDistribution);
+
+        $totalPatients = $roleDistribution['patient'];
+        $totalNurses = $roleDistribution['nurse'];
+        $totalDoctors = $roleDistribution['doctor'];
+        $activePatients = $roleDistribution['patient'];
+
+        $healthReportsCount = MedicalReport::count();
         $pendingreports = MedicalReport::where('status', 'pending')->count();
+
+        $totalIncidents = HealthIncident::count();
+        $incidentsCount = $totalIncidents;
 
         return view('admin.dashboard', compact(
             'totalUsers',
             'totalPatients',
             'totalNurses',
             'totalDoctors',
+            'activePatients',
+            'healthReportsCount',
             'totalIncidents',
-            'pendingreports'
+            'incidentsCount',
+            'pendingreports',
+            'roleDistribution'
         ));
     }
 
