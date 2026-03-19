@@ -40,7 +40,10 @@
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
                                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $report->patient->user->name }}</h3>
-                                        <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Report Type:') }} {{ ucfirst(str_replace('_', ' ', $report->report_type)) }}</p>
+                                        <p class="text-sm text-gray-600 dark:text-slate-400">
+                                            {{ __('Incident Type:') }}
+                                            {{ $report->healthIncident?->incident_type ? ucfirst(str_replace('_', ' ', $report->healthIncident->incident_type)) : __('N/A') }}
+                                        </p>
                                         <p class="text-xs text-gray-500 mt-1">{{ $report->created_at->format('M d, Y h:i A') }}</p>
                                     </div>
                                     <div class="text-right">
@@ -54,8 +57,15 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-4 p-4 bg-gray-50 dark:bg-slate-700 rounded">
-                                    <p class="text-sm text-gray-700 dark:text-slate-300">{{ $report->content }}</p>
+                                <div class="mb-4 p-4 bg-gray-50 dark:bg-slate-700 rounded space-y-2">
+                                    <div>
+                                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">{{ __('Diagnosis') }}</p>
+                                        <p class="text-sm text-gray-700 dark:text-slate-300 whitespace-pre-line">{{ $report->diagnosis }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">{{ __('Treatment Plan') }}</p>
+                                        <p class="text-sm text-gray-700 dark:text-slate-300 whitespace-pre-line">{{ $report->treatment_plan }}</p>
+                                    </div>
                                 </div>
 
                                 @if($report->status === 'pending')
