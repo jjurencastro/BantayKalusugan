@@ -37,6 +37,37 @@
                 </div>
             </div>
 
+            <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-slate-700 mb-6">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('Selected Assistance Request') }}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Incident Type') }}</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $incident->incident_type)) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Severity') }}</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ ucfirst($incident->severity) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Reported') }}</p>
+                            <p class="font-semibold text-gray-900 dark:text-white">{{ $incident->reported_at->format('M d, Y h:i A') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Symptoms') }}</p>
+                            <p class="text-gray-900 dark:text-white">{{ $incident->symptoms ?: __('No symptoms provided.') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Description') }}</p>
+                            <p class="text-gray-900 dark:text-white whitespace-pre-line">{{ $incident->description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recent Health Incidents -->
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-slate-700 mb-6">
                 <div class="p-6">
@@ -92,7 +123,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('doctor.store-advice', $patient) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('doctor.store-advice', $incident) }}" method="POST" class="space-y-6">
                         @csrf
 
                         <!-- Diagnosis -->

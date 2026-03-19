@@ -66,44 +66,6 @@
                 </div>
             </div>
 
-            <!-- Recent Medical Advice Section -->
-            <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-slate-700">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Recent Medical Advice') }}</h3>
-                        <a href="{{ route('patient.medical-advice') }}" class="text-sm text-purple-600 hover:text-purple-700 font-medium">
-                            {{ __('View All Advice') }}
-                        </a>
-                    </div>
-
-                    @if($recentAdvices->count() > 0)
-                        <div class="space-y-3">
-                            @foreach($recentAdvices as $advice)
-                                <div class="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-slate-700 rounded">
-                                    <div class="flex justify-between items-start gap-4">
-                                        <div>
-                                            <p class="text-sm text-gray-600 dark:text-slate-400">
-                                                {{ __('From:') }}
-                                                <span class="font-semibold text-gray-900 dark:text-white">
-                                                    {{ $advice->doctor?->user?->name ?? __('Assigned Doctor') }}
-                                                </span>
-                                            </p>
-                                            <p class="text-sm text-gray-700 dark:text-slate-300 whitespace-pre-line mt-2">{{ \Illuminate\Support\Str::limit($advice->advice, 220) }}</p>
-                                            @if($advice->follow_up_date)
-                                                <p class="text-xs text-blue-700 dark:text-blue-300 mt-2">{{ __('Follow-up:') }} {{ $advice->follow_up_date->format('M d, Y') }}</p>
-                                            @endif
-                                        </div>
-                                        <p class="text-xs text-gray-500">{{ $advice->created_at->format('M d, Y') }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="text-gray-600 dark:text-slate-400 text-center py-6">{{ __('No medical advice received yet.') }}</p>
-                    @endif
-                </div>
-            </div>
-
             <!-- Recent Health Incidents Section -->
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-red-100 dark:border-slate-700">
                 <div class="p-6">
@@ -123,12 +85,17 @@
                                         <th class="px-4 py-2 text-left">{{ __('Severity') }}</th>
                                         <th class="px-4 py-2 text-left">{{ __('Status') }}</th>
                                         <th class="px-4 py-2 text-left">{{ __('Date Reported') }}</th>
+                                        <th class="px-4 py-2 text-left">{{ __('Advice') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
                                     @foreach($healthIncidents as $incident)
                                         <tr class="hover:bg-gray-50 dark:hover:bg-slate-700">
-                                            <td class="px-4 py-2">{{ ucfirst($incident->incident_type) }}</td>
+                                            <td class="px-4 py-2">
+                                                <a href="{{ route('patient.incidents.show', $incident) }}" class="text-blue-600 hover:text-blue-700 font-medium">
+                                                    {{ ucfirst(str_replace('_', ' ', $incident->incident_type)) }}
+                                                </a>
+                                            </td>
                                             <td class="px-4 py-2">
                                                 <span class="px-2 py-1 rounded text-white text-xs font-semibold
                                                     @if($incident->severity === 'critical') bg-red-600
@@ -150,6 +117,15 @@
                                                 </span>
                                             </td>
                                             <td class="px-4 py-2">{{ $incident->reported_at->format('M d, Y') }}</td>
+                                            <td class="px-4 py-2">
+                                                @if($incident->medicalAdvice)
+                                                    <a href="{{ route('patient.incidents.show', $incident) }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">
+                                                        {{ __('View Advice') }}
+                                                    </a>
+                                                @else
+                                                    <span class="text-xs text-gray-500">{{ __('Pending') }}</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

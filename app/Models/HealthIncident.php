@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class HealthIncident extends Model
 {
@@ -29,5 +30,10 @@ class HealthIncident extends Model
     public function medicalReport()
     {
         return $this->hasOne(MedicalReport::class);
+    }
+
+    public function medicalAdvice(): HasOne
+    {
+        return $this->hasOne(MedicalAdvice::class);
     }
 }

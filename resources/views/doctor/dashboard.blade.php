@@ -112,9 +112,15 @@
                                                 @endif">
                                                 {{ ucfirst($request->severity) }}
                                             </span>
-                                            <a href="{{ route('doctor.provide-advice', $request->patient) }}" class="block mt-2 text-purple-600 hover:text-purple-700 text-sm font-medium">
-                                                {{ __('Provide Advice →') }}
-                                            </a>
+                                            @if($request->medicalAdvice)
+                                                <a href="{{ route('doctor.view-advice', $request->medicalAdvice) }}" class="block mt-2 text-gray-600 hover:text-gray-700 text-sm font-medium">
+                                                    {{ __('View Advice →') }}
+                                                </a>
+                                            @else
+                                                <a href="{{ route('doctor.provide-advice', $request) }}" class="block mt-2 text-purple-600 hover:text-purple-700 text-sm font-medium">
+                                                    {{ __('Provide Advice →') }}
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

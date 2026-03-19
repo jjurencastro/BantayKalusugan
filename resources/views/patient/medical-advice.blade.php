@@ -26,6 +26,13 @@
                                                 {{ $advice->doctor?->user?->name ?? __('Assigned Doctor') }}
                                             </h4>
                                             <p class="text-xs text-gray-500">{{ $advice->created_at->format('M d, Y h:i A') }}</p>
+                                            @if($advice->healthIncident)
+                                                <p class="text-sm text-purple-700 dark:text-purple-300 mt-1">
+                                                    <a href="{{ route('patient.incidents.show', $advice->healthIncident) }}" class="hover:underline">
+                                                        {{ __('Linked Request:') }} {{ ucfirst(str_replace('_', ' ', $advice->healthIncident->incident_type)) }}
+                                                    </a>
+                                                </p>
+                                            @endif
                                         </div>
                                         @if($advice->follow_up_date)
                                             <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">

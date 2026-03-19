@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])->name('patient.dashboard');
     Route::get('/patient/medical-advice', [PatientController::class, 'viewMedicalAdvice'])->name('patient.medical-advice');
+    Route::get('/patient/incidents/{incident}', [PatientController::class, 'viewIncident'])->name('patient.incidents.show');
     Route::get('/patient/request-assistance', [PatientController::class, 'requestAssistance'])->name('patient.request-assistance');
     Route::post('/patient/request-assistance', [PatientController::class, 'storeAssistance'])->name('patient.store-assistance');
     Route::get('/patient/alerts', [PatientController::class, 'viewAlerts'])->name('patient.alerts');
@@ -53,8 +54,9 @@ Route::middleware(['auth', 'role:nurse'])->group(function () {
 // Doctor Routes
 Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard');
-    Route::get('/doctor/advice/{patient}', [DoctorController::class, 'provideMedicalAdvice'])->name('doctor.provide-advice');
-    Route::post('/doctor/advice/{patient}', [DoctorController::class, 'storeMedicalAdvice'])->name('doctor.store-advice');
+    Route::get('/doctor/advice/{incident}', [DoctorController::class, 'provideMedicalAdvice'])->name('doctor.provide-advice');
+    Route::post('/doctor/advice/{incident}', [DoctorController::class, 'storeMedicalAdvice'])->name('doctor.store-advice');
+    Route::get('/doctor/advice-record/{advice}', [DoctorController::class, 'viewMedicalAdvice'])->name('doctor.view-advice');
     Route::get('/doctor/reports', [DoctorController::class, 'viewReports'])->name('doctor.reports');
     Route::get('/doctor/report/{report}/approve', [DoctorController::class, 'approveReport'])->name('doctor.approve-report');
     Route::patch('/doctor/report/{report}/approve', [DoctorController::class, 'storeReportApproval'])->name('doctor.store-approval');

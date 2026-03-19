@@ -18,18 +18,13 @@ class PatientController extends Controller
             ->limit(10)
             ->get();
 
-        $recentAdvices = MedicalAdvice::with('doctor.user')
+        $healthIncidents = HealthIncident::with('medicalAdvice')
             ->where('patient_id', $patient->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        $healthIncidents = HealthIncident::where('patient_id', $patient->id)
             ->orderBy('reported_at', 'desc')
             ->limit(5)
             ->get();
 
-        return view('patient.dashboard', compact('patient', 'healthAlerts', 'healthIncidents', 'recentAdvices'));
+        return view('patient.dashboard', compact('patient', 'healthAlerts', 'healthIncidents'));
     }
 
     public function requestAssistance()
@@ -93,11 +88,22 @@ class PatientController extends Controller
     {
         $patient = auth()->user()->patient;
 
-        $advices = MedicalAdvice::with('doctor.user')
+        $advices = MedicalAdvice::with(['doctor.user', 'healthIncident'])
             ->where('patient_id', $patient->id)
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         return view('patient.medical-advice', compact('advices'));
+    }
+
+    public function viewIncident(HealthIncident $incident)
+    {
+        if ($incident->patient_id !== auth()->user()->patient->id) {
+            abort(403);
+        }
+
+        $incident->load(['medicalAdvice.doctor.user']);
+
+        return view('patient.incident-detail', compact('incident'));
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\MedicalAdvice;
 use App\Models\MedicalReport;
 use App\Models\HealthIncident;
-use App\Models\Patient;
 use Illuminate\Http\Request;
 
 class DoctorController extends Controller
@@ -14,13 +13,14 @@ class DoctorController extends Controller
     {
         $doctor = auth()->user()->doctor;
 
-        $recentRequests = HealthIncident::with('patient.user')
-            ->whereIn('status', ['reported', 'under_review'])
+        $recentRequests = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
             ->orderBy('reported_at', 'desc')
             ->limit(10)
             ->get();
 
-        $pendingRequests = HealthIncident::whereIn('status', ['reported', 'under_review'])->count();
+        $pendingRequests = HealthIncident::whereIn('status', ['reported', 'under_review'])
+            ->doesntHave('medicalAdvice')
+            ->count();
         $reportsForApproval = MedicalReport::where('status', 'pending')->count();
         $advicesGiven = MedicalAdvice::where('doctor_id', $doctor->id)->count();
         $patientsConsulted = MedicalAdvice::where('doctor_id', $doctor->id)
@@ -36,18 +36,35 @@ class DoctorController extends Controller
         ));
     }
 
-    public function provideMedicalAdvice(Patient $patient)
+    public function provideMedicalAdvice(HealthIncident $incident)
     {
+        $incident->load(['patient.user', 'medicalAdvice.doctor.user']);
+
+        if ($incident->medicalAdvice) {
+            return redirect()->route('doctor.view-advice', $incident->medicalAdvice)
+                ->with('info', 'Medical advice has already been provided for this assistance request.');
+        }
+
+        $patient = $incident->patient;
+
         $recentIncidents = HealthIncident::where('patient_id', $patient->id)
+            ->where('id', '!=', $incident->id)
             ->orderBy('reported_at', 'desc')
             ->limit(5)
             ->get();
 
-        return view('doctor.provide-advice', compact('patient', 'recentIncidents'));
+        return view('doctor.provide-advice', compact('incident', 'patient', 'recentIncidents'));
     }
 
-    public function storeMedicalAdvice(Request $request, Patient $patient)
+    public function storeMedicalAdvice(Request $request, HealthIncident $incident)
     {
+        $existingAdvice = MedicalAdvice::where('health_incident_id', $incident->id)->first();
+
+        if ($existingAdvice) {
+            return redirect()->route('doctor.view-advice', $existingAdvice)
+                ->with('info', 'Medical advice has already been submitted for this assistance request.');
+        }
+
         $validated = $request->validate([
             'diagnosis' => 'required|string',
             'treatment_plan' => 'required|string',
@@ -63,7 +80,8 @@ class DoctorController extends Controller
         }
 
         MedicalAdvice::create([
-            'patient_id' => $patient->id,
+            'patient_id' => $incident->patient_id,
+            'health_incident_id' => $incident->id,
             'doctor_id' => auth()->user()->doctor->id,
             'advice' => $advice,
             'medication' => $validated['medication'] ?? null,
@@ -71,6 +89,17 @@ class DoctorController extends Controller
         ]);
 
         return redirect()->route('doctor.dashboard')->with('success', 'Medical advice provided successfully');
+    }
+
+    public function viewMedicalAdvice(MedicalAdvice $advice)
+    {
+        if ($advice->doctor_id !== auth()->user()->doctor->id) {
+            abort(403);
+        }
+
+        $advice->load(['patient.user', 'healthIncident']);
+
+        return view('doctor.view-advice', compact('advice'));
     }
 
     public function approveReport(MedicalReport $report)
