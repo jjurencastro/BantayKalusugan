@@ -49,7 +49,37 @@ class PatientController extends Controller
     public function storeAssistance(Request $request)
     {
         $validated = $request->validate([
-            'incident_type' => 'required|string',
+            'request_type' => 'required|in:home_visit,medication_assistance,medical_supply,follow_up_care,transport_assistance,other',
+            'description' => 'required|string',
+            'symptoms' => 'nullable|string',
+            'severity' => 'required|in:low,medium,high,critical',
+        ]);
+
+        $patient = auth()->user()->patient;
+
+        HealthIncident::create([
+            'patient_id' => $patient->id,
+            'incident_type' => $validated['request_type'],
+            'request_channel' => 'assistance',
+            'description' => $validated['description'],
+            'symptoms' => $validated['symptoms'] ?? null,
+            'severity' => $validated['severity'],
+            'reported_at' => now(),
+            'status' => 'reported',
+        ]);
+
+        return redirect()->route('patient.dashboard')->with('success', 'Medical assistance request submitted successfully. A nurse will review it.');
+    }
+
+    public function reportIncident()
+    {
+        return view('patient.report-incident');
+    }
+
+    public function storeIncident(Request $request)
+    {
+        $validated = $request->validate([
+            'incident_type' => 'required|in:injury,illness,emergency,follow_up,medication_issue,other',
             'description' => 'required|string',
             'symptoms' => 'nullable|string',
             'severity' => 'required|in:low,medium,high,critical',
@@ -60,6 +90,7 @@ class PatientController extends Controller
         HealthIncident::create([
             'patient_id' => $patient->id,
             'incident_type' => $validated['incident_type'],
+            'request_channel' => 'incident',
             'description' => $validated['description'],
             'symptoms' => $validated['symptoms'] ?? null,
             'severity' => $validated['severity'],

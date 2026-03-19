@@ -11,8 +11,11 @@
                 <a href="{{ route('patient.medical-advice') }}" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
                     {{ __('Medical Advice') }}
                 </a>
-                <a href="{{ route('patient.request-assistance') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    {{ __('Request Assistance') }}
+                <a href="{{ route('patient.request-assistance') }}" class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+                    {{ __('Request Medical Assistance') }}
+                </a>
+                <a href="{{ route('patient.report-incident') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    {{ __('Report Incident') }}
                 </a>
             </div>
         </div>
@@ -70,8 +73,8 @@
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-red-100 dark:border-slate-700">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Your Health Incidents') }}</h3>
-                        <a href="{{ route('patient.request-assistance') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Your Incidents and Assistance Requests') }}</h3>
+                        <a href="{{ route('patient.report-incident') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
                             {{ __('+ Report New Incident') }}
                         </a>
                     </div>

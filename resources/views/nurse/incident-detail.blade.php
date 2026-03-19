@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-2xl text-gray-800 dark:text-white leading-tight">
-                {{ __('Assistance Request — Read Only') }}
+                {{ __('Assistance Request Detail') }}
             </h2>
             <a href="{{ route('nurse.assistance-requests') }}" class="inline-block px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
                 {{ __('Back to Requests') }}
@@ -12,14 +12,11 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-            <!-- Read-only banner -->
-            <div class="flex items-center gap-2 px-4 py-3 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg text-blue-700 dark:text-blue-300 text-sm">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ __('This is a read-only view. Only doctors can provide or edit medical advice.') }}
-            </div>
+            @if (session('success'))
+                <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-700 dark:bg-green-900/20 dark:text-green-200">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <!-- Patient Information -->
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-blue-100 dark:border-slate-700">
@@ -52,7 +49,7 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('Assistance Request Details') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Incident Type') }}</p>
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Request Type') }}</p>
                             <p class="font-semibold text-gray-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $incident->incident_type)) }}</p>
                         </div>
                         <div>
@@ -83,6 +80,18 @@
                             <p class="text-gray-900 dark:text-white whitespace-pre-line">{{ $incident->description }}</p>
                         </div>
                     </div>
+
+                    @if($incident->status !== 'resolved')
+                        <div class="mt-6 border-t border-gray-200 dark:border-slate-700 pt-4">
+                            <form action="{{ route('nurse.approve-assistance-request', $incident) }}" method="POST" onsubmit="return confirm('{{ __('Approve this assistance request?') }}')">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="inline-flex items-center rounded bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition">
+                                    {{ __('Approve Assistance Request') }}
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
 

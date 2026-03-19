@@ -14,6 +14,7 @@ class HealthIncident extends Model
     protected $fillable = [
         'patient_id',
         'incident_type',
+        'request_channel',
         'description',
         'symptoms',
         'status',

@@ -165,15 +165,36 @@ class NurseController extends Controller
     public function viewAssistanceRequests()
     {
         $incidents = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
-            ->prioritizeAdviceQueue()
+            ->where('request_channel', 'assistance')
+            ->orderByRaw("CASE status WHEN 'reported' THEN 1 WHEN 'under_review' THEN 2 WHEN 'resolved' THEN 3 ELSE 4 END ASC")
+            ->orderBySeverityDesc()
             ->orderBy('reported_at', 'desc')
             ->paginate(20);
 
         return view('nurse.assistance-requests', compact('incidents'));
     }
 
+    public function approveAssistanceRequest(HealthIncident $incident)
+    {
+        if ($incident->request_channel !== 'assistance') {
+            abort(404);
+        }
+
+        if ($incident->status !== 'resolved') {
+            $incident->update([
+                'status' => 'resolved',
+            ]);
+        }
+
+        return back()->with('success', 'Assistance request approved successfully.');
+    }
+
     public function viewIncidentDetail(HealthIncident $incident)
     {
+        if ($incident->request_channel !== 'assistance') {
+            abort(404);
+        }
+
         $incident->load(['patient.user', 'medicalAdvice.doctor.user']);
 
         return view('nurse.incident-detail', compact('incident'));

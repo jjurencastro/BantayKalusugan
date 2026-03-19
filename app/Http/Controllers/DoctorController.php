@@ -16,12 +16,14 @@ class DoctorController extends Controller
         $doctor = auth()->user()->doctor;
 
         $recentRequests = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
+            ->where('request_channel', 'incident')
             ->prioritizeAdviceQueue()
             ->orderBy('reported_at', 'desc')
             ->limit(10)
             ->get();
 
         $pendingRequests = HealthIncident::whereIn('status', ['reported', 'under_review'])
+            ->where('request_channel', 'incident')
             ->doesntHave('medicalAdvice')
             ->count();
         $reportsForApproval = MedicalReport::where('status', 'pending')->count();
@@ -41,6 +43,10 @@ class DoctorController extends Controller
 
     public function provideMedicalAdvice(HealthIncident $incident)
     {
+        if ($incident->request_channel !== 'incident') {
+            abort(404);
+        }
+
         $incident->load(['patient.user', 'medicalAdvice.doctor.user']);
 
         if ($incident->medicalAdvice) {
@@ -66,6 +72,10 @@ class DoctorController extends Controller
 
     public function storeMedicalAdvice(Request $request, HealthIncident $incident)
     {
+        if ($incident->request_channel !== 'incident') {
+            abort(404);
+        }
+
         $request->merge([
             'follow_up_date' => DateInput::normalize($request->input('follow_up_date')),
         ]);

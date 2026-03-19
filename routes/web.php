@@ -37,6 +37,8 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/patient/incidents/{incident}', [PatientController::class, 'viewIncident'])->name('patient.incidents.show');
     Route::get('/patient/request-assistance', [PatientController::class, 'requestAssistance'])->name('patient.request-assistance');
     Route::post('/patient/request-assistance', [PatientController::class, 'storeAssistance'])->name('patient.store-assistance');
+    Route::get('/patient/report-incident', [PatientController::class, 'reportIncident'])->name('patient.report-incident');
+    Route::post('/patient/report-incident', [PatientController::class, 'storeIncident'])->name('patient.store-incident');
     Route::get('/patient/alerts', [PatientController::class, 'viewAlerts'])->name('patient.alerts');
     Route::patch('/patient/alerts/{alert}', [PatientController::class, 'markAlertAsRead'])->name('patient.mark-alert-read');
 });
@@ -50,6 +52,7 @@ Route::middleware(['auth', 'role:nurse'])->group(function () {
     Route::get('/nurse/community-health', [NurseController::class, 'communityHealthStatus'])->name('nurse.community-health');
     Route::post('/nurse/patient/{patient}/alert', [NurseController::class, 'storeHealthAlert'])->name('nurse.store-health-alert');
     Route::get('/nurse/assistance-requests', [NurseController::class, 'viewAssistanceRequests'])->name('nurse.assistance-requests');
+    Route::patch('/nurse/assistance-requests/{incident}/approve', [NurseController::class, 'approveAssistanceRequest'])->name('nurse.approve-assistance-request');
     Route::get('/nurse/assistance-requests/{incident}', [NurseController::class, 'viewIncidentDetail'])->name('nurse.incident-detail');
 });
 
