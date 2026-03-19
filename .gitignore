@@ -19,6 +19,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+/database/erd_lucid_import.sql
+/database/lucid_information_schema_export.txt
 Homestead.json
 Homestead.yaml
 Thumbs.db
