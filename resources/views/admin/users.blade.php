@@ -14,6 +14,17 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if(session('success'))
+                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 rounded-lg">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <!-- Search Bar -->
             <div class="mb-6">
                 <input type="text" placeholder="{{ __('Search users by name or email...') }}" id="searchInput"
@@ -65,10 +76,19 @@
                                                 {{ $user->created_at->format('M d, Y') }}
                                             </td>
                                             <td class="px-4 py-3 text-center">
-                                                <div class="flex justify-center gap-2">
+                                                <div class="flex justify-center gap-2 flex-wrap">
                                                     <a href="{{ route('admin.edit-user', $user) }}" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
                                                         {{ __('Edit') }}
                                                     </a>
+                                                    @if($user->id !== auth()->id())
+                                                        <form action="{{ route('admin.toggle-user-status', $user) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="px-3 py-1 text-white text-xs rounded transition {{ ($user->is_active ?? true) ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600' }}">
+                                                                {{ ($user->is_active ?? true) ? __('Deactivate') : __('Activate') }}
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                     <form action="{{ route('admin.delete-user', $user) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure?') }}')">
                                                         @csrf
                                                         @method('DELETE')

@@ -69,16 +69,33 @@ class BarangayAdminController extends Controller
     public function updateUser(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string',
-            'address' => 'nullable|string',
-            'role' => 'required|in:patient,nurse,doctor,barangay_admin',
+            'name'      => 'required|string',
+            'email'     => 'required|email|unique:users,email,' . $user->id,
+            'phone'     => 'nullable|string',
+            'address'   => 'nullable|string',
+            'role'      => 'required|in:patient,nurse,doctor,barangay_admin',
+            'is_active' => 'nullable|boolean',
         ]);
 
-        $user->update($validated);
+        $user->update(array_merge($validated, [
+            'is_active' => $request->boolean('is_active', true),
+        ]));
 
         return redirect()->route('admin.users')->with('success', 'User updated successfully');
+    }
+
+    public function toggleUserStatus(User $user)
+    {
+        // Prevent admins from deactivating themselves
+        if ($user->id === auth()->id()) {
+            return redirect()->route('admin.users')->with('error', 'You cannot change your own status.');
+        }
+
+        $user->update(['is_active' => ! $user->is_active]);
+
+        $statusLabel = $user->is_active ? 'activated' : 'deactivated';
+
+        return redirect()->route('admin.users')->with('success', "{$user->name} has been {$statusLabel}.");
     }
 
     public function deleteUser(User $user)
@@ -99,11 +116,34 @@ class BarangayAdminController extends Controller
 
     public function incidentReports()
     {
-        $incidents = HealthIncident::with('patient')
+        $totalIncidents    = HealthIncident::count();
+        $criticalIncidents = HealthIncident::where('severity', 'critical')->count();
+        $highSeverity      = HealthIncident::where('severity', 'high')->count();
+        $resolvedIncidents = HealthIncident::where('status', 'resolved')->count();
+
+        $incidentsByType = HealthIncident::selectRaw('incident_type, COUNT(*) as total')
+            ->groupBy('incident_type')
+            ->orderByDesc('total')
+            ->get();
+
+        $severityCounts = HealthIncident::selectRaw('severity, COUNT(*) as total')
+            ->groupBy('severity')
+            ->pluck('total', 'severity')
+            ->toArray();
+
+        $recentIncidents = HealthIncident::with('patient.user')
             ->orderBy('reported_at', 'desc')
             ->paginate(20);
 
-        return view('admin.incident-reports', compact('incidents'));
+        return view('admin.incident-reports', compact(
+            'totalIncidents',
+            'criticalIncidents',
+            'highSeverity',
+            'resolvedIncidents',
+            'incidentsByType',
+            'severityCounts',
+            'recentIncidents'
+        ));
     }
 
     public function generateReport(Request $request)

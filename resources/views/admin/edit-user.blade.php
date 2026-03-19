@@ -60,6 +60,14 @@
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
                         </div>
 
+                        <div class="flex items-center gap-3 pt-1">
+                            <input type="hidden" name="is_active" value="0">
+                            <input type="checkbox" id="is_active" name="is_active" value="1"
+                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                {{ old('is_active', $user->is_active ?? true) ? 'checked' : '' }}>
+                            <x-input-label for="is_active" :value="__('Active (user can log in)')" class="!mb-0 cursor-pointer" />
+                        </div>
+
                         <div class="flex items-center justify-end gap-3 pt-3">
                             <a href="{{ route('admin.users') }}" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
                                 {{ __('Cancel') }}

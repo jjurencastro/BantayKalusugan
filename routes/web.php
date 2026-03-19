@@ -72,6 +72,7 @@ Route::middleware(['auth', 'role:barangay_admin'])->group(function () {
     Route::get('/admin/users', [BarangayAdminController::class, 'manageUsers'])->name('admin.users');
     Route::get('/admin/user/{user}/edit', [BarangayAdminController::class, 'editUser'])->name('admin.edit-user');
     Route::patch('/admin/user/{user}', [BarangayAdminController::class, 'updateUser'])->name('admin.update-user');
+    Route::patch('/admin/user/{user}/toggle-status', [BarangayAdminController::class, 'toggleUserStatus'])->name('admin.toggle-user-status');
     Route::delete('/admin/user/{user}', [BarangayAdminController::class, 'deleteUser'])->name('admin.delete-user');
     Route::get('/admin/health-reports', [BarangayAdminController::class, 'healthReports'])->name('admin.health-reports');
     Route::get('/admin/incident-reports', [BarangayAdminController::class, 'incidentReports'])->name('admin.incident-reports');

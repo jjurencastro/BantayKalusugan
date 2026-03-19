@@ -39,23 +39,18 @@
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-indigo-100 dark:border-slate-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('Incidents by Type') }}</h3>
-                    
+
                     <div class="space-y-3">
-                        @forelse([
-                            ['type' => 'Injury', 'count' => 25],
-                            ['type' => 'Illness', 'count' => 42],
-                            ['type' => 'Emergency', 'count' => 8],
-                            ['type' => 'Follow-up', 'count' => 35],
-                            ['type' => 'Medication Issue', 'count' => 12],
-                        ] as $type)
+                        @forelse($incidentsByType as $typeRow)
+                            @php $pct = $totalIncidents > 0 ? ($typeRow->total / $totalIncidents) * 100 : 0; @endphp
                             <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700 rounded">
                                 <div class="flex-1">
-                                    <p class="font-medium text-gray-900 dark:text-white">{{ $type['type'] }}</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $typeRow->incident_type)) }}</p>
                                 </div>
                                 <div class="w-40 bg-gray-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full" style="width: {{ ($type['count'] / 45) * 100 }}%"></div>
+                                    <div class="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full" style="width: {{ $pct }}%"></div>
                                 </div>
-                                <p class="ml-4 text-sm font-semibold text-gray-900 dark:text-white">{{ $type['count'] }} {{ __('cases') }}</p>
+                                <p class="ml-4 text-sm font-semibold text-gray-900 dark:text-white">{{ $typeRow->total }} {{ __('cases') }}</p>
                             </div>
                         @empty
                             <p class="text-gray-600 dark:text-slate-400 text-center py-6">{{ __('No incident data available') }}</p>
@@ -112,6 +107,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="mt-4">
+                            {{ $recentIncidents->links() }}
+                        </div>
                     @else
                         <p class="text-gray-600 dark:text-slate-400 text-center py-8">{{ __('No recent incidents recorded.') }}</p>
                     @endif
@@ -122,41 +120,32 @@
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-indigo-100 dark:border-slate-700">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('Severity Distribution') }}</h3>
-                    
+
+                    @php
+                        $sevLabels = [
+                            'critical' => ['label' => 'Critical', 'bar' => 'bg-red-600'],
+                            'high'     => ['label' => 'High',     'bar' => 'bg-orange-600'],
+                            'medium'   => ['label' => 'Medium',   'bar' => 'bg-yellow-600'],
+                            'low'      => ['label' => 'Low',      'bar' => 'bg-green-600'],
+                        ];
+                    @endphp
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <div class="space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('Critical') }}</span>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">15%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-red-600 h-full rounded-full" style="width: 15%"></div>
-                                </div>
-
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('High') }}</span>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">30%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-orange-600 h-full rounded-full" style="width: 30%"></div>
-                                </div>
-
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('Medium') }}</span>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">35%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-yellow-600 h-full rounded-full" style="width: 35%"></div>
-                                </div>
-
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('Low') }}</span>
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">20%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-green-600 h-full rounded-full" style="width: 20%"></div>
-                                </div>
+                                @foreach($sevLabels as $key => $meta)
+                                    @php
+                                        $count = $severityCounts[$key] ?? 0;
+                                        $pct   = $totalIncidents > 0 ? round(($count / $totalIncidents) * 100) : 0;
+                                    @endphp
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm text-gray-600 dark:text-slate-400">{{ $meta['label'] }}</span>
+                                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $count }} ({{ $pct }}%)</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
+                                        <div class="{{ $meta['bar'] }} h-full rounded-full" style="width: {{ $pct }}%"></div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 
@@ -165,10 +154,16 @@
                                 <strong>{{ __('Key Insights:') }}</strong>
                             </p>
                             <ul class="text-sm text-gray-600 dark:text-slate-400 space-y-2">
-                                <li>• {{ __('45% of incidents require urgent attention') }}</li>
-                                <li>• {{ __('Most common incident type: Illness (45%)') }}</li>
-                                <li>• {{ __('Average resolution time: 3-5 days') }}</li>
-                                <li>• {{ __('Recovery rate: 85% success') }}</li>
+                                @php
+                                    $urgentCount = ($severityCounts['critical'] ?? 0) + ($severityCounts['high'] ?? 0);
+                                    $urgentPct   = $totalIncidents > 0 ? round(($urgentCount / $totalIncidents) * 100) : 0;
+                                    $topType     = $incidentsByType->first();
+                                @endphp
+                                <li>• {{ $urgentPct }}% {{ __('of incidents require urgent attention') }}</li>
+                                @if($topType)
+                                    <li>• {{ __('Most common type:') }} {{ ucfirst(str_replace('_', ' ', $topType->incident_type)) }} ({{ $totalIncidents > 0 ? round(($topType->total / $totalIncidents) * 100) : 0 }}%)</li>
+                                @endif
+                                <li>• {{ __('Resolved:') }} {{ $resolvedIncidents }} / {{ $totalIncidents }} {{ __('incidents') }}</li>
                             </ul>
                         </div>
                     </div>
