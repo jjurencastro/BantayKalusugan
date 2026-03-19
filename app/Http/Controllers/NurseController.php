@@ -113,7 +113,7 @@ class NurseController extends Controller
     public function viewAssistanceRequests()
     {
         $incidents = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
-            ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
+            ->prioritizeAdviceQueue()
             ->orderBy('reported_at', 'desc')
             ->paginate(20);
 

@@ -22,7 +22,7 @@ class PatientController extends Controller
 
         $healthIncidents = HealthIncident::with('medicalAdvice')
             ->where('patient_id', $patient->id)
-            ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
+            ->orderBySeverityDesc()
             ->orderBy('reported_at', 'desc')
             ->limit(5)
             ->get();
