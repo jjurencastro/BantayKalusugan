@@ -49,6 +49,8 @@ Route::middleware(['auth', 'role:nurse'])->group(function () {
     Route::post('/nurse/patient/{patient}/update-health', [NurseController::class, 'updatePatientHealth'])->name('nurse.update-patient-health');
     Route::get('/nurse/community-health', [NurseController::class, 'communityHealthStatus'])->name('nurse.community-health');
     Route::post('/nurse/patient/{patient}/alert', [NurseController::class, 'storeHealthAlert'])->name('nurse.store-health-alert');
+    Route::get('/nurse/assistance-requests', [NurseController::class, 'viewAssistanceRequests'])->name('nurse.assistance-requests');
+    Route::get('/nurse/assistance-requests/{incident}', [NurseController::class, 'viewIncidentDetail'])->name('nurse.incident-detail');
 });
 
 // Doctor Routes

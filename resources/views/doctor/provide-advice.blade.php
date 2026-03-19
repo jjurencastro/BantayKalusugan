@@ -75,24 +75,24 @@
 
                     @if($recentIncidents && $recentIncidents->count() > 0)
                         <div class="space-y-3">
-                            @foreach($recentIncidents as $incident)
+                            @foreach($recentIncidents as $recentIncident)
                                 <div class="p-4 border-l-4 border-orange-500 bg-orange-50 dark:bg-slate-700 rounded">
                                     <div class="flex justify-between items-start mb-2">
-                                        <h4 class="font-semibold text-gray-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $incident->incident_type)) }}</h4>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">{{ ucfirst(str_replace('_', ' ', $recentIncident->incident_type)) }}</h4>
                                         <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                            @if($incident->severity === 'critical') bg-red-600 text-white
-                                            @elseif($incident->severity === 'high') bg-orange-600 text-white
-                                            @elseif($incident->severity === 'medium') bg-yellow-600 text-white
+                                            @if($recentIncident->severity === 'critical') bg-red-600 text-white
+                                            @elseif($recentIncident->severity === 'high') bg-orange-600 text-white
+                                            @elseif($recentIncident->severity === 'medium') bg-yellow-600 text-white
                                             @else bg-green-600 text-white
                                             @endif">
-                                            {{ ucfirst($incident->severity) }}
+                                            {{ ucfirst($recentIncident->severity) }}
                                         </span>
                                     </div>
-                                    <p class="text-gray-700 dark:text-slate-300 text-sm">{{ $incident->description }}</p>
-                                    @if($incident->symptoms)
-                                        <p class="text-sm text-gray-600 dark:text-slate-400 mt-2"><strong>{{ __('Symptoms:') }}</strong> {{ $incident->symptoms }}</p>
+                                    <p class="text-gray-700 dark:text-slate-300 text-sm">{{ $recentIncident->description }}</p>
+                                    @if($recentIncident->symptoms)
+                                        <p class="text-sm text-gray-600 dark:text-slate-400 mt-2"><strong>{{ __('Symptoms:') }}</strong> {{ $recentIncident->symptoms }}</p>
                                     @endif
-                                    <p class="text-xs text-gray-500 mt-2">{{ $incident->reported_at->format('M d, Y h:i A') }}</p>
+                                    <p class="text-xs text-gray-500 mt-2">{{ $recentIncident->reported_at->format('M d, Y h:i A') }}</p>
                                 </div>
                             @endforeach
                         </div>

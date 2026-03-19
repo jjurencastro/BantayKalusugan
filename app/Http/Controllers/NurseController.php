@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\HealthAlert;
 use App\Models\HealthIncident;
+use App\Models\MedicalAdvice;
 use App\Models\PatientHealthUpdate;
 use Illuminate\Http\Request;
 
@@ -107,5 +108,22 @@ class NurseController extends Controller
             ->get();
 
         return view('nurse.community-health', compact('totalPatients', 'recentUpdates'));
+    }
+
+    public function viewAssistanceRequests()
+    {
+        $incidents = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
+            ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
+            ->orderBy('reported_at', 'desc')
+            ->paginate(20);
+
+        return view('nurse.assistance-requests', compact('incidents'));
+    }
+
+    public function viewIncidentDetail(HealthIncident $incident)
+    {
+        $incident->load(['patient.user', 'medicalAdvice.doctor.user']);
+
+        return view('nurse.incident-detail', compact('incident'));
     }
 }

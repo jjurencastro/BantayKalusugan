@@ -5,6 +5,9 @@
                 {{ __('Nurse Dashboard') }}
             </h2>
             <div class="space-x-2">
+                <a href="{{ route('nurse.assistance-requests') }}" class="inline-block px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
+                    {{ __('Assistance Requests') }}
+                </a>
                 <a href="{{ route('nurse.patients') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     {{ __('View Patients') }}
                 </a>
