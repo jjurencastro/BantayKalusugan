@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Patient;
 use App\Models\HealthAlert;
 use App\Models\HealthIncident;
 use App\Models\MedicalAdvice;
@@ -13,6 +12,12 @@ class PatientController extends Controller
     public function dashboard()
     {
         $patient = auth()->user()->patient;
+
+        $totalIncidentsCount = HealthIncident::where('patient_id', $patient->id)->count();
+        $resolvedIncidentsCount = HealthIncident::where('patient_id', $patient->id)
+            ->where('status', 'resolved')
+            ->count();
+
         $healthAlerts = HealthAlert::where('patient_id', $patient->id)
             ->where('is_read', false)
             ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
@@ -27,7 +32,13 @@ class PatientController extends Controller
             ->limit(5)
             ->get();
 
-        return view('patient.dashboard', compact('patient', 'healthAlerts', 'healthIncidents'));
+        return view('patient.dashboard', compact(
+            'patient',
+            'healthAlerts',
+            'healthIncidents',
+            'totalIncidentsCount',
+            'resolvedIncidentsCount'
+        ));
     }
 
     public function requestAssistance()

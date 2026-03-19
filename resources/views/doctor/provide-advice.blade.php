@@ -39,6 +39,53 @@
 
             <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-slate-700 mb-6">
                 <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('Latest Nurse Health Update') }}</h3>
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mb-4">{{ __('Read-only data entered by nursing staff.') }}</p>
+
+                    @if($latestHealthUpdate)
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Blood Pressure') }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $latestHealthUpdate->blood_pressure ?? __('N/A') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Heart Rate') }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $latestHealthUpdate->heart_rate ? $latestHealthUpdate->heart_rate . ' BPM' : __('N/A') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Temperature') }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $latestHealthUpdate->temperature ? $latestHealthUpdate->temperature . ' °C' : __('N/A') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Weight') }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $latestHealthUpdate->weight ? $latestHealthUpdate->weight . ' kg' : __('N/A') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Height') }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $latestHealthUpdate->height ? $latestHealthUpdate->height . ' cm' : __('N/A') }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Recorded At') }}</p>
+                                <p class="font-semibold text-gray-900 dark:text-white">{{ $latestHealthUpdate->recorded_at?->format('M d, Y h:i A') ?? __('N/A') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Nurse Notes') }}</p>
+                            <p class="text-gray-900 dark:text-white whitespace-pre-line">{{ $latestHealthUpdate->notes ?? __('No notes provided.') }}</p>
+                        </div>
+
+                        <div class="mt-3 text-xs text-gray-500 dark:text-slate-400">
+                            {{ __('Updated by:') }} {{ $latestHealthUpdate->nurse?->user?->name ?? __('Nurse') }}
+                        </div>
+                    @else
+                        <p class="text-gray-600 dark:text-slate-400 text-center py-6">{{ __('No nurse health updates recorded yet.') }}</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-slate-700 mb-6">
+                <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('Selected Assistance Request') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>

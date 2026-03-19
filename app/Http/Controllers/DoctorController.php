@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MedicalAdvice;
 use App\Models\MedicalReport;
 use App\Models\HealthIncident;
+use App\Models\PatientHealthUpdate;
 use App\Support\DateInput;
 use Illuminate\Http\Request;
 
@@ -55,7 +56,12 @@ class DoctorController extends Controller
             ->limit(5)
             ->get();
 
-        return view('doctor.provide-advice', compact('incident', 'patient', 'recentIncidents'));
+        $latestHealthUpdate = PatientHealthUpdate::with('nurse.user')
+            ->where('patient_id', $patient->id)
+            ->orderBy('recorded_at', 'desc')
+            ->first();
+
+        return view('doctor.provide-advice', compact('incident', 'patient', 'recentIncidents', 'latestHealthUpdate'));
     }
 
     public function storeMedicalAdvice(Request $request, HealthIncident $incident)
@@ -92,6 +98,10 @@ class DoctorController extends Controller
             'advice' => $advice,
             'medication' => $validated['medication'] ?? null,
             'follow_up_date' => $validated['follow_up_date'] ?? null,
+        ]);
+
+        $incident->update([
+            'status' => 'resolved',
         ]);
 
         return redirect()->route('doctor.dashboard')->with('success', 'Medical advice provided successfully');

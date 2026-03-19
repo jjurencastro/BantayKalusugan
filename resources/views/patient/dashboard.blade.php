@@ -162,7 +162,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('Total Incidents') }}</p>
-                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $healthIncidents->count() }}</p>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $totalIncidentsCount ?? 0 }}</p>
                         </div>
                     </div>
                 </div>
@@ -176,7 +176,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('Resolved') }}</p>
-                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $healthIncidents->where('status', 'resolved')->count() }}</p>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $resolvedIncidentsCount ?? 0 }}</p>
                         </div>
                     </div>
                 </div>

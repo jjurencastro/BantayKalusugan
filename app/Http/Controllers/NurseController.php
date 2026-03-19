@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\HealthAlert;
 use App\Models\HealthIncident;
-use App\Models\MedicalAdvice;
 use App\Models\PatientHealthUpdate;
 use Illuminate\Http\Request;
 
@@ -19,10 +18,9 @@ class NurseController extends Controller
         $criticalAlerts = HealthAlert::where('severity', 'critical')->count();
 
         $nurseId = auth()->user()->nurse?->id;
-        $completedUpdates = PatientHealthUpdate::when(
-            $nurseId,
-            fn ($query) => $query->where('nurse_id', $nurseId)
-        )->count();
+        $completedUpdates = $nurseId
+            ? PatientHealthUpdate::where('nurse_id', $nurseId)->count()
+            : 0;
 
         return view('nurse.dashboard', compact(
             'patients',
@@ -103,11 +101,65 @@ class NurseController extends Controller
     public function communityHealthStatus()
     {
         $totalPatients = Patient::count();
-        $recentUpdates = PatientHealthUpdate::orderBy('recorded_at', 'desc')
-            ->limit(20)
+
+        $criticalCases = HealthIncident::where('severity', 'critical')
+            ->whereIn('status', ['reported', 'under_review'])
+            ->count();
+
+        $pendingUpdates = Patient::doesntHave('healthUpdates')->count();
+
+        $criticalPatientsCount = HealthIncident::where('severity', 'critical')
+            ->whereIn('status', ['reported', 'under_review'])
+            ->distinct('patient_id')
+            ->count('patient_id');
+
+        $healthyPercentage = $totalPatients > 0
+            ? (int) round((($totalPatients - min($criticalPatientsCount, $totalPatients)) / $totalPatients) * 100)
+            : 0;
+
+        $communityStats = [
+            'total_patients' => $totalPatients,
+            'critical_cases' => $criticalCases,
+            'pending_updates' => $pendingUpdates,
+            'healthy' => $healthyPercentage,
+        ];
+
+        $commonIssues = HealthIncident::selectRaw('incident_type, COUNT(*) as total')
+            ->groupBy('incident_type')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get()
+            ->map(fn ($issue) => [
+                'name' => ucfirst(str_replace('_', ' ', $issue->incident_type)),
+                'count' => (int) $issue->total,
+            ])
+            ->values()
+            ->all();
+
+        $criticalIncidents = HealthIncident::with('patient.user')
+            ->whereIn('severity', ['critical', 'high'])
+            ->whereIn('status', ['reported', 'under_review'])
+            ->orderByRaw("CASE severity WHEN 'critical' THEN 2 ELSE 1 END DESC")
+            ->orderBy('reported_at', 'desc')
+            ->limit(8)
             ->get();
 
-        return view('nurse.community-health', compact('totalPatients', 'recentUpdates'));
+        $patientsWithDob = Patient::whereNotNull('date_of_birth')->get();
+        $patientsWithDobCount = $patientsWithDob->count();
+
+        $childrenCount = $patientsWithDob->filter(fn ($patient) => $patient->age !== null && $patient->age <= 12)->count();
+        $teensCount = $patientsWithDob->filter(fn ($patient) => $patient->age !== null && $patient->age >= 13 && $patient->age <= 19)->count();
+        $adultsCount = $patientsWithDob->filter(fn ($patient) => $patient->age !== null && $patient->age >= 20 && $patient->age <= 59)->count();
+        $seniorsCount = $patientsWithDob->filter(fn ($patient) => $patient->age !== null && $patient->age >= 60)->count();
+
+        $ageGroups = [
+            'children' => $patientsWithDobCount > 0 ? (int) round(($childrenCount / $patientsWithDobCount) * 100) : 0,
+            'teens' => $patientsWithDobCount > 0 ? (int) round(($teensCount / $patientsWithDobCount) * 100) : 0,
+            'adults' => $patientsWithDobCount > 0 ? (int) round(($adultsCount / $patientsWithDobCount) * 100) : 0,
+            'seniors' => $patientsWithDobCount > 0 ? (int) round(($seniorsCount / $patientsWithDobCount) * 100) : 0,
+        ];
+
+        return view('nurse.community-health', compact('communityStats', 'commonIssues', 'criticalIncidents', 'ageGroups'));
     }
 
     public function viewAssistanceRequests()
