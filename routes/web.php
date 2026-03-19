@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
 // Patient Routes
 Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])->name('patient.dashboard');
+    Route::get('/patient/medical-advice', [PatientController::class, 'viewMedicalAdvice'])->name('patient.medical-advice');
     Route::get('/patient/request-assistance', [PatientController::class, 'requestAssistance'])->name('patient.request-assistance');
     Route::post('/patient/request-assistance', [PatientController::class, 'storeAssistance'])->name('patient.store-assistance');
     Route::get('/patient/alerts', [PatientController::class, 'viewAlerts'])->name('patient.alerts');

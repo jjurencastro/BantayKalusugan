@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\HealthAlert;
 use App\Models\HealthIncident;
+use App\Models\MedicalAdvice;
 use Illuminate\Http\Request;
 
 class PatientController extends Controller
@@ -16,12 +17,19 @@ class PatientController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
+
+        $recentAdvices = MedicalAdvice::with('doctor.user')
+            ->where('patient_id', $patient->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         $healthIncidents = HealthIncident::where('patient_id', $patient->id)
             ->orderBy('reported_at', 'desc')
             ->limit(5)
             ->get();
 
-        return view('patient.dashboard', compact('patient', 'healthAlerts', 'healthIncidents'));
+        return view('patient.dashboard', compact('patient', 'healthAlerts', 'healthIncidents', 'recentAdvices'));
     }
 
     public function requestAssistance()
@@ -56,11 +64,18 @@ class PatientController extends Controller
     public function viewAlerts()
     {
         $patient = auth()->user()->patient;
-        $alerts = HealthAlert::where('patient_id', $patient->id)
+        $filter = request('filter', 'all');
+
+        $alertsQuery = HealthAlert::where('patient_id', $patient->id);
+        if ($filter === 'unread') {
+            $alertsQuery->where('is_read', false);
+        }
+
+        $alerts = $alertsQuery
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
-        return view('patient.alerts', compact('alerts'));
+        return view('patient.alerts', compact('alerts', 'filter'));
     }
 
     public function markAlertAsRead(HealthAlert $alert)
@@ -72,5 +87,17 @@ class PatientController extends Controller
         $alert->update(['is_read' => true]);
 
         return back()->with('success', 'Alert marked as read');
+    }
+
+    public function viewMedicalAdvice()
+    {
+        $patient = auth()->user()->patient;
+
+        $advices = MedicalAdvice::with('doctor.user')
+            ->where('patient_id', $patient->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('patient.medical-advice', compact('advices'));
     }
 }

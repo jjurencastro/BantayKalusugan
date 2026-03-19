@@ -8,6 +8,9 @@
                 <a href="{{ route('patient.alerts') }}" class="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
                     {{ __('View Alerts') }}
                 </a>
+                <a href="{{ route('patient.medical-advice') }}" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                    {{ __('Medical Advice') }}
+                </a>
                 <a href="{{ route('patient.request-assistance') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     {{ __('Request Assistance') }}
                 </a>
@@ -42,7 +45,7 @@
                                             <p class="text-sm text-gray-600 dark:text-slate-400">{{ $alert->message ?? $alert->description }}</p>
                                             <p class="text-xs text-gray-500 mt-2">{{ $alert->created_at->format('M d, Y h:i A') }}</p>
                                         </div>
-                                        @if(!$alert->read_at)
+                                        @if(!$alert->is_read)
                                             <form method="POST" action="{{ route('patient.mark-alert-read', $alert) }}" class="inline">
                                                 @csrf
                                                 @method('PATCH')
@@ -59,6 +62,44 @@
                         </div>
                     @else
                         <p class="text-gray-600 dark:text-slate-400 text-center py-8">{{ __('No alerts at this time. Keep up with your health!') }}</p>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Recent Medical Advice Section -->
+            <div class="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-purple-100 dark:border-slate-700">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Recent Medical Advice') }}</h3>
+                        <a href="{{ route('patient.medical-advice') }}" class="text-sm text-purple-600 hover:text-purple-700 font-medium">
+                            {{ __('View All Advice') }}
+                        </a>
+                    </div>
+
+                    @if($recentAdvices->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($recentAdvices as $advice)
+                                <div class="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-slate-700 rounded">
+                                    <div class="flex justify-between items-start gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-slate-400">
+                                                {{ __('From:') }}
+                                                <span class="font-semibold text-gray-900 dark:text-white">
+                                                    {{ $advice->doctor?->user?->name ?? __('Assigned Doctor') }}
+                                                </span>
+                                            </p>
+                                            <p class="text-sm text-gray-700 dark:text-slate-300 whitespace-pre-line mt-2">{{ \Illuminate\Support\Str::limit($advice->advice, 220) }}</p>
+                                            @if($advice->follow_up_date)
+                                                <p class="text-xs text-blue-700 dark:text-blue-300 mt-2">{{ __('Follow-up:') }} {{ $advice->follow_up_date->format('M d, Y') }}</p>
+                                            @endif
+                                        </div>
+                                        <p class="text-xs text-gray-500">{{ $advice->created_at->format('M d, Y') }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-gray-600 dark:text-slate-400 text-center py-6">{{ __('No medical advice received yet.') }}</p>
                     @endif
                 </div>
             </div>
@@ -131,7 +172,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('Active Alerts') }}</p>
-                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $healthAlerts->where('read_at', null)->count() }}</p>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $healthAlerts->where('is_read', false)->count() }}</p>
                         </div>
                     </div>
                 </div>
