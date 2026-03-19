@@ -3,11 +3,19 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Support\DateInput;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'date_of_birth' => DateInput::normalize($this->input('date_of_birth')),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

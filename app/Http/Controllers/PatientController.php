@@ -14,12 +14,15 @@ class PatientController extends Controller
     {
         $patient = auth()->user()->patient;
         $healthAlerts = HealthAlert::where('patient_id', $patient->id)
+            ->where('is_read', false)
+            ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
 
         $healthIncidents = HealthIncident::with('medicalAdvice')
             ->where('patient_id', $patient->id)
+            ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
             ->orderBy('reported_at', 'desc')
             ->limit(5)
             ->get();

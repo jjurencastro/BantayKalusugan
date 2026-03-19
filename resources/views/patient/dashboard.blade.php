@@ -61,7 +61,7 @@
                             @endforeach
                         </div>
                     @else
-                        <p class="text-gray-600 dark:text-slate-400 text-center py-8">{{ __('No alerts at this time. Keep up with your health!') }}</p>
+                        <p class="text-gray-600 dark:text-slate-400 text-center py-8">{{ __('No unread alerts at this time.') }}</p>
                     @endif
                 </div>
             </div>
@@ -148,7 +148,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('Active Alerts') }}</p>
-                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $healthAlerts->where('is_read', false)->count() }}</p>
+                            <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $healthAlerts->count() }}</p>
                         </div>
                     </div>
                 </div>

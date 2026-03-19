@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Models\Nurse;
 use App\Models\Doctor;
 use App\Models\AdminAccessCode;
+use App\Support\DateInput;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,6 +34,10 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $request->merge([
+            'date_of_birth' => DateInput::normalize($request->input('date_of_birth')),
+        ]);
+
         // Build validation rules
         $rules = [
             'name' => ['required', 'string', 'max:255'],

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MedicalAdvice;
 use App\Models\MedicalReport;
 use App\Models\HealthIncident;
+use App\Support\DateInput;
 use Illuminate\Http\Request;
 
 class DoctorController extends Controller
@@ -14,6 +15,7 @@ class DoctorController extends Controller
         $doctor = auth()->user()->doctor;
 
         $recentRequests = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
+            ->orderByRaw("CASE severity WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END DESC")
             ->orderBy('reported_at', 'desc')
             ->limit(10)
             ->get();
@@ -58,6 +60,10 @@ class DoctorController extends Controller
 
     public function storeMedicalAdvice(Request $request, HealthIncident $incident)
     {
+        $request->merge([
+            'follow_up_date' => DateInput::normalize($request->input('follow_up_date')),
+        ]);
+
         $existingAdvice = MedicalAdvice::where('health_incident_id', $incident->id)->first();
 
         if ($existingAdvice) {

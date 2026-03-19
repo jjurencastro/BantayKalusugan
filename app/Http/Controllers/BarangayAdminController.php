@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\MedicalReport;
 use App\Models\HealthIncident;
 use App\Models\AdminAccessCode;
+use App\Support\DateInput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -107,6 +108,11 @@ class BarangayAdminController extends Controller
 
     public function generateReport(Request $request)
     {
+        $request->merge([
+            'start_date' => DateInput::normalize($request->input('start_date')),
+            'end_date' => DateInput::normalize($request->input('end_date')),
+        ]);
+
         $validated = $request->validate([
             'report_type' => 'required|in:health,incidents,users',
             'start_date' => 'nullable|date',

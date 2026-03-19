@@ -173,9 +173,10 @@
                             <label for="follow_up_date" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                                 {{ __('Follow-up Date (Optional)') }}
                             </label>
-                            <input type="date" id="follow_up_date" name="follow_up_date"
+                            <input type="text" id="follow_up_date" name="follow_up_date" placeholder="MM/DD/YYYY"
                                 class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                                 value="{{ old('follow_up_date') }}">
+                            <p class="text-xs text-gray-500 mt-1">{{ __('Use MM/DD/YYYY format.') }}</p>
                         </div>
 
                         <!-- Action Buttons -->

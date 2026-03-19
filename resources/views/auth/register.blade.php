@@ -55,9 +55,9 @@
 
                 <div>
                     <x-input-label for="date_of_birth" :value="__('Date of Birth (Optional)')" />
-                    <x-text-input id="date_of_birth" class="block mt-1 w-full" type="date" name="date_of_birth" :value="old('date_of_birth')" max="{{ now()->subDay()->format('Y-m-d') }}" />
+                    <x-text-input id="date_of_birth" class="block mt-1 w-full" type="text" name="date_of_birth" :value="old('date_of_birth')" placeholder="MM/DD/YYYY" />
                     <x-input-error :messages="$errors->get('date_of_birth')" class="mt-2" />
-                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">{{ __('Age is calculated automatically from date of birth.') }}</p>
+                    <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">{{ __('Use MM/DD/YYYY. Age is calculated automatically from date of birth.') }}</p>
                 </div>
             </div>
         </div>
