@@ -55,12 +55,7 @@
                                             </td>
                                             <td class="px-4 py-3 text-gray-700 dark:text-slate-300">{{ $user->email }}</td>
                                             <td class="px-4 py-3">
-                                                <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                                    @if($user->role === 'patient') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
-                                                    @elseif($user->role === 'nurse') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                                    @elseif($user->role === 'doctor') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
-                                                    @else bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                                    @endif">
+                                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-white/90 text-gray-800 ring-1 ring-black/10 dark:bg-white/20 dark:text-white dark:ring-white/25">
                                                     {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                                 </span>
                                             </td>
@@ -77,14 +72,14 @@
                                             </td>
                                             <td class="px-4 py-3 text-center">
                                                 <div class="flex justify-center gap-2 flex-wrap">
-                                                    <a href="{{ route('admin.edit-user', $user) }}" class="px-3 py-1 bg-slate-600 text-white text-xs rounded hover:bg-slate-700 transition">
+                                                    <a href="{{ route('admin.edit-user', $user) }}" class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition">
                                                         {{ __('Edit') }}
                                                     </a>
                                                     @if($user->id !== auth()->id())
                                                         <form action="{{ route('admin.toggle-user-status', $user) }}" method="POST" class="inline">
                                                             @csrf
                                                             @method('PATCH')
-                                                            <button type="submit" class="px-3 py-1 text-white text-xs rounded transition {{ ($user->is_active ?? true) ? 'bg-gray-600 hover:bg-gray-700' : 'bg-slate-500 hover:bg-slate-600' }}">
+                                                            <button type="submit" class="px-3 py-1 text-white text-xs rounded transition {{ ($user->is_active ?? true) ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700' }}">
                                                                 {{ ($user->is_active ?? true) ? __('Deactivate') : __('Activate') }}
                                                             </button>
                                                         </form>
@@ -92,7 +87,7 @@
                                                     <form action="{{ route('admin.delete-user', $user) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure?') }}')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="px-3 py-1 bg-zinc-700 text-white text-xs rounded hover:bg-zinc-800 transition">
+                                                        <button type="submit" class="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition">
                                                             {{ __('Delete') }}
                                                         </button>
                                                     </form>

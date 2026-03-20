@@ -27,10 +27,9 @@
                                     {{ __('Report Type') }}
                                 </label>
                                 <select id="report_type" name="report_type" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="overall">{{ __('Overall Community Health') }}</option>
+                                    <option value="health">{{ __('Health Reports') }}</option>
                                     <option value="incidents">{{ __('Incidents Summary') }}</option>
-                                    <option value="demographics">{{ __('Demographics Report') }}</option>
-                                    <option value="monthly">{{ __('Monthly Statistics') }}</option>
+                                    <option value="users">{{ __('Users Summary') }}</option>
                                 </select>
                             </div>
 
@@ -39,8 +38,8 @@
                                 <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                                     {{ __('From Date') }}
                                 </label>
-                                <input type="text" id="start_date" name="start_date" placeholder="MM/DD/YYYY" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <p class="text-xs text-gray-500 mt-1">{{ __('Use MM/DD/YYYY format.') }}</p>
+                                <input type="text" id="start_date" name="start_date" value="{{ old('start_date') }}" data-date-picker class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <p class="text-xs text-gray-500 mt-1">{{ __('Select a date from the calendar.') }}</p>
                             </div>
 
                             <!-- Date Range To -->
@@ -48,8 +47,8 @@
                                 <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                                     {{ __('To Date') }}
                                 </label>
-                                <input type="text" id="end_date" name="end_date" placeholder="MM/DD/YYYY" class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <p class="text-xs text-gray-500 mt-1">{{ __('Use MM/DD/YYYY format.') }}</p>
+                                <input type="text" id="end_date" name="end_date" value="{{ old('end_date') }}" data-date-picker class="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <p class="text-xs text-gray-500 mt-1">{{ __('Select a date from the calendar.') }}</p>
                             </div>
                         </div>
 

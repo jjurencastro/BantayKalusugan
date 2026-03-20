@@ -119,7 +119,10 @@ class BarangayAdminController extends Controller
         $totalIncidents    = HealthIncident::count();
         $criticalIncidents = HealthIncident::where('severity', 'critical')->count();
         $highSeverity      = HealthIncident::where('severity', 'high')->count();
-        $resolvedIncidents = HealthIncident::where('status', 'resolved')->count();
+        $resolvedIncidents = HealthIncident::whereHas('medicalAdvice', function ($query) {
+            $query->whereNotNull('doctor_id')
+                ->whereNull('follow_up_date');
+        })->count();
 
         $incidentsByType = HealthIncident::selectRaw('incident_type, COUNT(*) as total')
             ->groupBy('incident_type')

@@ -15,7 +15,10 @@ class PatientController extends Controller
 
         $totalIncidentsCount = HealthIncident::where('patient_id', $patient->id)->count();
         $resolvedIncidentsCount = HealthIncident::where('patient_id', $patient->id)
-            ->where('status', 'resolved')
+            ->whereHas('medicalAdvice', function ($query) {
+                $query->whereNotNull('doctor_id')
+                    ->whereNull('follow_up_date');
+            })
             ->count();
 
         $healthAlerts = HealthAlert::where('patient_id', $patient->id)

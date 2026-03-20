@@ -62,10 +62,10 @@
 
                 <div>
                     <x-input-label for="date_of_birth" :value="__('Date of Birth (Optional)')" />
-                    <x-text-input id="date_of_birth" name="date_of_birth" type="text" class="mt-1 block w-full" :value="old('date_of_birth', optional($user->patient->date_of_birth)->format('m/d/Y'))" placeholder="MM/DD/YYYY" />
+                    <x-text-input id="date_of_birth" name="date_of_birth" type="text" class="mt-1 block w-full" :value="old('date_of_birth', optional($user->patient->date_of_birth)->format('Y-m-d'))" data-date-picker />
                     <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
                     <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">
-                        {{ __('Use MM/DD/YYYY. Current age:') }} {{ $user->patient->age ?? __('N/A') }}
+                        {{ __('Current age:') }} {{ $user->patient->age ?? __('N/A') }}
                     </p>
                 </div>
             </div>
