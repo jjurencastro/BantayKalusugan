@@ -16,6 +16,10 @@
 
         <!-- Alpine.js -->
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+        <!-- Flatpickr -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     </head>
     <body class="font-sans antialiased dark:bg-slate-900">
         <div class="min-h-screen bg-gray-50 dark:bg-slate-900">
@@ -35,5 +39,17 @@
                 {{ $slot }}
             </main>
         </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-date-picker]').forEach(function (input) {
+                flatpickr(input, {
+                    dateFormat: 'Y-m-d',
+                    altInput: true,
+                    altFormat: 'F j, Y',
+                    disableMobile: true,
+                });
+            });
+        });
+    </script>
     </body>
 </html>
