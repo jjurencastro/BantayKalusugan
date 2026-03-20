@@ -5,13 +5,13 @@
                 {{ __('Nurse Dashboard') }}
             </h2>
             <div class="space-x-2">
-                <a href="{{ route('nurse.assistance-requests') }}" class="inline-block px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
+                <a href="{{ route('nurse.assistance-requests') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Assistance Requests') }}
                 </a>
-                <a href="{{ route('nurse.patients') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                <a href="{{ route('nurse.patients') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('View Patients') }}
                 </a>
-                <a href="{{ route('nurse.community-health') }}" class="inline-block px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                <a href="{{ route('nurse.community-health') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Community Health') }}
                 </a>
             </div>
@@ -97,7 +97,7 @@
                         {{ __('View your assigned patients to see their latest health updates and manage their care.') }}
                     </p>
                     <div class="text-center">
-                        <a href="{{ route('nurse.patients') }}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        <a href="{{ route('nurse.patients') }}" class="inline-block px-6 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                             {{ __('View All Patients') }}
                         </a>
                     </div>

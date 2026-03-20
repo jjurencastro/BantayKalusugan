@@ -5,13 +5,13 @@
                 {{ __('Barangay Admin Dashboard') }}
             </h2>
             <div class="space-x-2">
-                <a href="{{ route('admin.users') }}" class="inline-block px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition">
+                <a href="{{ route('admin.users') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Manage Users') }}
                 </a>
-                <a href="{{ route('admin.access-codes') }}" class="inline-block px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
+                <a href="{{ route('admin.access-codes') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Access Codes') }}
                 </a>
-                <a href="{{ route('admin.security') }}" class="inline-block px-4 py-2 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800 transition">
+                <a href="{{ route('admin.security') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Security') }}
                 </a>
             </div>
