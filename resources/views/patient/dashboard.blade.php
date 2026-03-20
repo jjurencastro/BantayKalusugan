@@ -5,16 +5,16 @@
                 {{ __('Patient Dashboard') }}
             </h2>
             <div class="space-x-2">
-                <a href="{{ route('patient.alerts') }}" class="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                <a href="{{ route('patient.alerts') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('View Alerts') }}
                 </a>
-                <a href="{{ route('patient.medical-advice') }}" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                <a href="{{ route('patient.medical-advice') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Medical Advice') }}
                 </a>
-                <a href="{{ route('patient.request-assistance') }}" class="inline-block px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+                <a href="{{ route('patient.request-assistance') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Request Medical Assistance') }}
                 </a>
-                <a href="{{ route('patient.report-incident') }}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                <a href="{{ route('patient.report-incident') }}" class="inline-block px-4 py-2 bg-white/90 text-gray-700 rounded-lg border border-gray-200 hover:bg-white transition dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
                     {{ __('Report Incident') }}
                 </a>
             </div>
