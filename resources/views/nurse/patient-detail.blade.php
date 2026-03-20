@@ -40,9 +40,9 @@
                             <p class="text-sm text-gray-600 dark:text-slate-400">{{ __('Patient Status') }}</p>
                             <p class="text-lg font-semibold text-gray-900 dark:text-white">
                                 <span class="px-3 py-1 rounded-full text-sm
-                                    @if($patient->status === 'active') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    @if($patient->status === 'active' || $patient->status === null) bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                     @elseif($patient->status === 'inactive') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
-                                    @else bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                    @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
                                     @endif">
                                     {{ ucfirst($patient->status ?? 'active') }}
                                 </span>
