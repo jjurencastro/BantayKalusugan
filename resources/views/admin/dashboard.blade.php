@@ -5,13 +5,13 @@
                 {{ __('Barangay Admin Dashboard') }}
             </h2>
             <div class="space-x-2">
-                <a href="{{ route('admin.users') }}" class="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                <a href="{{ route('admin.users') }}" class="inline-block px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition">
                     {{ __('Manage Users') }}
                 </a>
-                <a href="{{ route('admin.access-codes') }}" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                <a href="{{ route('admin.access-codes') }}" class="inline-block px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
                     {{ __('Access Codes') }}
                 </a>
-                <a href="{{ route('admin.security') }}" class="inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                <a href="{{ route('admin.security') }}" class="inline-block px-4 py-2 bg-zinc-700 text-white rounded-lg hover:bg-zinc-800 transition">
                     {{ __('Security') }}
                 </a>
             </div>

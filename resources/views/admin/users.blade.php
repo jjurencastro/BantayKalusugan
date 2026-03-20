@@ -77,14 +77,14 @@
                                             </td>
                                             <td class="px-4 py-3 text-center">
                                                 <div class="flex justify-center gap-2 flex-wrap">
-                                                    <a href="{{ route('admin.edit-user', $user) }}" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
+                                                    <a href="{{ route('admin.edit-user', $user) }}" class="px-3 py-1 bg-slate-600 text-white text-xs rounded hover:bg-slate-700 transition">
                                                         {{ __('Edit') }}
                                                     </a>
                                                     @if($user->id !== auth()->id())
                                                         <form action="{{ route('admin.toggle-user-status', $user) }}" method="POST" class="inline">
                                                             @csrf
                                                             @method('PATCH')
-                                                            <button type="submit" class="px-3 py-1 text-white text-xs rounded transition {{ ($user->is_active ?? true) ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600' }}">
+                                                            <button type="submit" class="px-3 py-1 text-white text-xs rounded transition {{ ($user->is_active ?? true) ? 'bg-gray-600 hover:bg-gray-700' : 'bg-slate-500 hover:bg-slate-600' }}">
                                                                 {{ ($user->is_active ?? true) ? __('Deactivate') : __('Activate') }}
                                                             </button>
                                                         </form>
@@ -92,7 +92,7 @@
                                                     <form action="{{ route('admin.delete-user', $user) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure?') }}')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition">
+                                                        <button type="submit" class="px-3 py-1 bg-zinc-700 text-white text-xs rounded hover:bg-zinc-800 transition">
                                                             {{ __('Delete') }}
                                                         </button>
                                                     </form>
