@@ -12,20 +12,10 @@
 
     <div class="py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-            <!-- Filter Tabs -->
-            <div class="mb-6 flex gap-2 flex-wrap">
-                <a href="{{ route('doctor.reports') }}" class="px-4 py-2 rounded-lg text-sm font-medium {{ !request('status') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300' }} hover:bg-purple-700 transition">
-                    {{ __('All Reports') }}
-                </a>
-                <a href="{{ route('doctor.reports', ['status' => 'pending']) }}" class="px-4 py-2 rounded-lg text-sm font-medium {{ request('status') === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300' }} hover:bg-yellow-700 transition">
-                    {{ __('Pending Approval') }}
-                </a>
-                <a href="{{ route('doctor.reports', ['status' => 'approved']) }}" class="px-4 py-2 rounded-lg text-sm font-medium {{ request('status') === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300' }} hover:bg-green-700 transition">
-                    {{ __('Approved') }}
-                </a>
-                <a href="{{ route('doctor.reports', ['status' => 'rejected']) }}" class="px-4 py-2 rounded-lg text-sm font-medium {{ request('status') === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300' }} hover:bg-red-700 transition">
-                    {{ __('Rejected') }}
-                </a>
+            <div class="mb-6 p-4 bg-blue-50 dark:bg-slate-700 rounded-lg border border-blue-100 dark:border-slate-600">
+                <p class="text-sm text-blue-900 dark:text-slate-200">
+                    {{ __('Showing pending medical reports linked to nurse-approved assistance requests.') }}
+                </p>
             </div>
 
             @if($reports->count() > 0)
@@ -97,7 +87,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                     </svg>
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('No reports found') }}</h3>
-                    <p class="text-gray-600 dark:text-slate-400">{{ __('No medical reports to review.') }}</p>
+                    <p class="text-gray-600 dark:text-slate-400">{{ __('No pending reports from nurse-approved assistance requests.') }}</p>
                 </div>
             @endif
         </div>

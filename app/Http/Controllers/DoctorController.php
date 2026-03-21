@@ -26,7 +26,12 @@ class DoctorController extends Controller
             ->where('request_channel', 'incident')
             ->doesntHave('medicalAdvice')
             ->count();
-        $reportsForApproval = MedicalReport::where('status', 'pending')->count();
+        $reportsForApproval = MedicalReport::where('status', 'pending')
+            ->whereHas('healthIncident', function ($query) {
+                $query->where('request_channel', 'assistance')
+                    ->where('status', 'resolved');
+            })
+            ->count();
         $advicesGiven = MedicalAdvice::where('doctor_id', $doctor->id)->count();
         $patientsConsulted = MedicalAdvice::where('doctor_id', $doctor->id)
             ->distinct('patient_id')
@@ -160,6 +165,11 @@ class DoctorController extends Controller
     public function viewReports()
     {
         $reports = MedicalReport::with(['patient', 'doctor'])
+            ->where('status', 'pending')
+            ->whereHas('healthIncident', function ($query) {
+                $query->where('request_channel', 'assistance')
+                    ->where('status', 'resolved');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
