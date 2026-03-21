@@ -8,11 +8,14 @@ use App\Models\HealthIncident;
 use App\Models\PatientHealthUpdate;
 use App\Support\DateInput;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DoctorController extends Controller
 {
     public function dashboard()
     {
+        $this->ensurePendingReportsForApprovedAssistance();
+
         $doctor = auth()->user()->doctor;
 
         $recentRequests = HealthIncident::with(['patient.user', 'medicalAdvice.doctor.user'])
@@ -165,6 +168,8 @@ class DoctorController extends Controller
 
     public function viewReports()
     {
+        $this->ensurePendingReportsForApprovedAssistance();
+
         $reports = MedicalReport::with(['patient', 'doctor'])
             ->where('status', 'pending')
             ->whereHas('healthIncident', function ($query) {
@@ -199,5 +204,38 @@ class DoctorController extends Controller
         ]);
 
         return redirect()->route('doctor.dashboard')->with('success', 'Medical report created and submitted for approval');
+    }
+
+    private function ensurePendingReportsForApprovedAssistance(): void
+    {
+        $approvedAssistanceWithoutReport = HealthIncident::query()
+            ->leftJoin('medical_reports', 'medical_reports.health_incident_id', '=', 'health_incidents.id')
+            ->whereNull('medical_reports.id')
+            ->where('health_incidents.request_channel', 'assistance')
+            ->where('health_incidents.status', 'resolved')
+            ->select('health_incidents.id', 'health_incidents.patient_id')
+            ->get();
+
+        if ($approvedAssistanceWithoutReport->isEmpty()) {
+            return;
+        }
+
+        $timestamp = now();
+
+        DB::table('medical_reports')->insert(
+            $approvedAssistanceWithoutReport->map(function ($incident) use ($timestamp) {
+                return [
+                    'patient_id' => $incident->patient_id,
+                    'doctor_id' => null,
+                    'health_incident_id' => $incident->id,
+                    'diagnosis' => 'Pending doctor assessment for approved assistance request.',
+                    'treatment_plan' => 'To be provided by the assigned doctor after review.',
+                    'status' => 'pending',
+                    'approved_at' => null,
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ];
+            })->all()
+        );
     }
 }

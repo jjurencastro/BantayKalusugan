@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\HealthAlert;
 use App\Models\HealthIncident;
+use App\Models\MedicalReport;
 use App\Models\PatientHealthUpdate;
 use Illuminate\Http\Request;
 
@@ -185,6 +186,18 @@ class NurseController extends Controller
                 'status' => 'resolved',
             ]);
         }
+
+        // Ensure nurse-approved assistance requests appear in the doctor's pending report queue.
+        MedicalReport::firstOrCreate(
+            ['health_incident_id' => $incident->id],
+            [
+                'patient_id' => $incident->patient_id,
+                'doctor_id' => null,
+                'diagnosis' => 'Pending doctor assessment for approved assistance request.',
+                'treatment_plan' => 'To be provided by the assigned doctor after review.',
+                'status' => 'pending',
+            ]
+        );
 
         return back()->with('success', 'Assistance request approved successfully.');
     }
