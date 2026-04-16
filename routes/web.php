@@ -22,16 +22,16 @@ Route::get('/dashboard', function () {
         'barangay_admin' => redirect()->route('admin.dashboard'),
         default => view('dashboard'),
     };
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'active', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Patient Routes
-Route::middleware(['auth', 'role:patient'])->group(function () {
+Route::middleware(['auth', 'active', 'role:patient'])->group(function () {
     Route::get('/patient/dashboard', [PatientController::class, 'dashboard'])->name('patient.dashboard');
     Route::get('/patient/medical-advice', [PatientController::class, 'viewMedicalAdvice'])->name('patient.medical-advice');
     Route::get('/patient/incidents/{incident}', [PatientController::class, 'viewIncident'])->name('patient.incidents.show');
@@ -44,7 +44,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 });
 
 // Nurse Routes
-Route::middleware(['auth', 'role:nurse'])->group(function () {
+Route::middleware(['auth', 'active', 'role:nurse'])->group(function () {
     Route::get('/nurse/dashboard', [NurseController::class, 'dashboard'])->name('nurse.dashboard');
     Route::get('/nurse/patients', [NurseController::class, 'viewPatients'])->name('nurse.patients');
     Route::get('/nurse/patient/{patient}', [NurseController::class, 'viewPatientDetail'])->name('nurse.patient-detail');
@@ -57,7 +57,7 @@ Route::middleware(['auth', 'role:nurse'])->group(function () {
 });
 
 // Doctor Routes
-Route::middleware(['auth', 'role:doctor'])->group(function () {
+Route::middleware(['auth', 'active', 'role:doctor'])->group(function () {
     Route::get('/doctor/dashboard', [DoctorController::class, 'dashboard'])->name('doctor.dashboard');
     Route::get('/doctor/advice/{incident}', [DoctorController::class, 'provideMedicalAdvice'])->name('doctor.provide-advice');
     Route::post('/doctor/advice/{incident}', [DoctorController::class, 'storeMedicalAdvice'])->name('doctor.store-advice');
@@ -70,7 +70,7 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
 });
 
 // Barangay Admin Routes
-Route::middleware(['auth', 'role:barangay_admin'])->group(function () {
+Route::middleware(['auth', 'active', 'role:barangay_admin'])->group(function () {
     Route::get('/admin/dashboard', [BarangayAdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [BarangayAdminController::class, 'manageUsers'])->name('admin.users');
     Route::get('/admin/user/{user}/edit', [BarangayAdminController::class, 'editUser'])->name('admin.edit-user');

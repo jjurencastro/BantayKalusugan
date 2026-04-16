@@ -4,9 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Patient;
-use App\Models\Nurse;
-use App\Models\Doctor;
 use App\Models\AdminAccessCode;
 use App\Support\DateInput;
 use Illuminate\Auth\Events\Registered;
@@ -75,16 +72,12 @@ class RegisteredUserController extends Controller
             'role' => $request->role,
         ]);
 
-        // Create role-specific record
-        match($request->role) {
-            'patient' => Patient::create([
-                'user_id' => $user->id,
+        if ($request->role === User::ROLE_PATIENT) {
+            $user->patient()->update([
                 'blood_type' => $validated['blood_type'] ?? null,
                 'date_of_birth' => $validated['date_of_birth'] ?? null,
-            ]),
-            'nurse' => Nurse::create(['user_id' => $user->id, 'specialization' => 'General', 'license_number' => 'LN' . $user->id . date('YmdHis')]),
-            'doctor' => Doctor::create(['user_id' => $user->id, 'specialization' => 'General', 'license_number' => 'MD' . $user->id . date('YmdHis')]),
-        };
+            ]);
+        }
 
         // Record access code usage for non-patient roles
         if ($request->role !== 'patient') {

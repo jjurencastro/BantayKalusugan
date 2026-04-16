@@ -6,12 +6,18 @@ use App\Models\User;
 use App\Models\MedicalReport;
 use App\Models\HealthIncident;
 use App\Models\AdminAccessCode;
+use App\Services\UserRoleProfileSyncService;
 use App\Support\DateInput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class BarangayAdminController extends Controller
 {
+    public function __construct(
+        private readonly UserRoleProfileSyncService $roleProfileSyncService
+    ) {
+    }
+
     public function dashboard()
     {
         $totalUsers = User::count();
@@ -80,6 +86,8 @@ class BarangayAdminController extends Controller
         $user->update(array_merge($validated, [
             'is_active' => $request->boolean('is_active', true),
         ]));
+
+        $this->roleProfileSyncService->sync($user->fresh(['patient', 'nurse', 'doctor', 'barangayAdmin']));
 
         return redirect()->route('admin.users')->with('success', 'User updated successfully');
     }
